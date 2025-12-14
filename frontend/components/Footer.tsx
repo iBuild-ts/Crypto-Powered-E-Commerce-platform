@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Github, Twitter, Linkedin } from 'lucide-react'
+import { Github, Twitter, Linkedin, Coffee } from 'lucide-react'
 
 export default function Footer() {
   return (
@@ -16,6 +16,9 @@ export default function Footer() {
             </div>
             <p className="text-slate-400 text-sm">
               Build and manage your crypto-powered online store with ease.
+            </p>
+            <p className="text-slate-500 text-xs mt-4">
+              Built with ❤️ by Horlah
             </p>
           </div>
 
@@ -41,13 +44,25 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Legal */}
+          {/* Connect */}
           <div>
-            <h3 className="font-semibold text-white mb-4">Legal</h3>
+            <h3 className="font-semibold text-white mb-4">Connect With Me</h3>
             <ul className="space-y-2 text-slate-400 text-sm">
-              <li><Link href="/privacy" className="hover:text-white transition">Privacy</Link></li>
-              <li><Link href="/terms" className="hover:text-white transition">Terms</Link></li>
-              <li><Link href="/security" className="hover:text-white transition">Security</Link></li>
+              <li>
+                <a href="https://X.com/lahwealth" target="_blank" rel="noopener noreferrer" className="hover:text-white transition flex items-center gap-2">
+                  <Twitter size={16} /> Follow on X
+                </a>
+              </li>
+              <li>
+                <a href="https://www.upwork.com/freelancers/~01857093015b424e00" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
+                  Work with me on Upwork
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-white transition flex items-center gap-2">
+                  <Coffee size={16} /> Buy me a coffee (ETH)
+                </a>
+              </li>
             </ul>
           </div>
         </div>
@@ -56,19 +71,25 @@ export default function Footer() {
         <div className="border-t border-slate-700 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-slate-400 text-sm">
-              © 2024 CryptoCart. All rights reserved.
+              © 2025 CryptoCart - Built with ❤️ by Horlah. All rights reserved.
             </p>
             <div className="flex gap-4 mt-4 md:mt-0">
-              <a href="#" className="text-slate-400 hover:text-white transition">
+              <a href="https://github.com/iBuild-ts/Crypto-Powered-E-Commerce-platform" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition">
                 <Github size={20} />
               </a>
-              <a href="#" className="text-slate-400 hover:text-white transition">
+              <a href="https://X.com/lahwealth" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition">
                 <Twitter size={20} />
               </a>
-              <a href="#" className="text-slate-400 hover:text-white transition">
+              <a href="https://www.upwork.com/freelancers/~01857093015b424e00" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition">
                 <Linkedin size={20} />
               </a>
             </div>
+          </div>
+          
+          {/* ETH Address */}
+          <div className="mt-6 pt-6 border-t border-slate-700 text-center">
+            <p className="text-slate-500 text-xs mb-2">Support this project with ETH</p>
+            <p className="text-slate-400 text-sm font-mono">0xdf49e29b6840d7ba57e4b5acddc770047f67ff13</p>
           </div>
         </div>
       </div>

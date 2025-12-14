@@ -124,4 +124,21 @@ MIT License - See LICENSE file for details
 
 ---
 
+## 🙏 Connect With Me
+
+**Buy me a coffee with ETH**
+```
+0xdf49e29b6840d7ba57e4b5acddc770047f67ff13
+```
+
+**Follow me on X**
+https://X.com/lahwealth
+
+**Work with me on Upwork**
+https://www.upwork.com/freelancers/~01857093015b424e00
+
+---
+
+**Copyright © 2025 - Built with ❤️ by Horlah**
+
 **CryptoCart** - Building the future of commerce on blockchain 🚀

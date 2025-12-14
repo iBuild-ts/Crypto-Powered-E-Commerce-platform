@@ -246,3 +246,22 @@ npm install
 ---
 
 **Ready to build? Start with `npm run dev` in both frontend and backend! 🚀**
+
+---
+
+## 🙏 Connect With Me
+
+**Buy me a coffee with ETH**
+```
+0xdf49e29b6840d7ba57e4b5acddc770047f67ff13
+```
+
+**Follow me on X**
+https://X.com/lahwealth
+
+**Work with me on Upwork**
+https://www.upwork.com/freelancers/~01857093015b424e00
+
+---
+
+**Copyright © 2025 - Built with ❤️ by Horlah**
