@@ -1,0 +1,306 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// User model
+model User {
+  id            String     @id @default(cuid())
+  email         String?    @unique
+  walletAddress String     @unique
+  username      String?    @unique
+  displayName   String?
+  avatar        String?
+  bio           String?
+  
+  // Authentication
+  passwordHash  String?
+  emailVerified Boolean    @default(false)
+  
+  // Wallet info
+  chainId       Int        @default(1)
+  
+  // Profile
+  kycStatus     String     @default("pending") // pending, verified, rejected
+  kycData       String?   // JSON as text
+  
+  // Relationships
+  stores        Store[]
+  products      Product[]
+  orders        Order[]
+  payments      Payment[]
+  subscriptions Subscription[]
+  transactions  Transaction[]
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+// Store model
+model Store {
+  id            String     @id @default(cuid())
+  userId        String
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name          String
+  slug          String     @unique
+  description   String?
+  logo          String?
+  banner        String?
+  
+  // Store settings
+  theme         String     @default("modern")
+  customDomain  String?    @unique
+  isPublished   Boolean    @default(false)
+  publishedAt   DateTime?
+  
+  // Design & Customization
+  design        String?    // Store design (colors, fonts, layout, sections) - JSON as text
+  settings      String?    // Store settings (payment, shipping, domain, notifications) - JSON as text
+  productDisplay String?   // Product display settings (layout, card style, features) - JSON as text
+  
+  // Payment settings
+  acceptedTokens String    @default("USDC,USDT") // comma-separated
+  walletAddress String
+  
+  // Metrics
+  totalSales    Float      @default(0)
+  totalOrders   Int        @default(0)
+  
+  // Relationships
+  products      Product[]
+  orders        Order[]
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  @@index([userId])
+  @@index([slug])
+}
+
+// Product model
+model Product {
+  id            String     @id @default(cuid())
+  userId        String
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  storeId       String
+  store         Store      @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  
+  name          String
+  slug          String
+  description   String?
+  image         String?
+  
+  // Pricing
+  price         Float
+  currency      String     @default("USDC")
+  
+  // Inventory
+  stock         Int        @default(0)
+  unlimited     Boolean    @default(false)
+  
+  // Metadata
+  category      String?
+  tags          String?    // comma-separated tags
+  sku           String?
+  
+  // Status
+  isActive      Boolean    @default(true)
+  
+  // Relationships
+  orderItems    OrderItem[]
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  @@unique([storeId, slug])
+  @@index([userId])
+  @@index([storeId])
+}
+
+// Order model
+model Order {
+  id            String     @id @default(cuid())
+  userId        String
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  storeId       String
+  store         Store      @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  
+  orderNumber   String     @unique
+  
+  // Order details
+  items         OrderItem[]
+  subtotal      Float
+  tax           Float      @default(0)
+  total         Float
+  
+  // Shipping
+  shippingAddress String?
+  shippingCost  Float      @default(0)
+  
+  // Status
+  status        String     @default("pending") // pending, confirmed, shipped, delivered, cancelled
+  
+  // Payment
+  paymentId     String?
+  payment       Payment?   @relation(fields: [paymentId], references: [id])
+  
+  // Customer info
+  customerEmail String
+  customerName  String
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  @@index([userId])
+  @@index([storeId])
+  @@index([status])
+}
+
+// OrderItem model
+model OrderItem {
+  id            String     @id @default(cuid())
+  orderId       String
+  order         Order      @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  productId     String
+  product       Product    @relation(fields: [productId], references: [id])
+  
+  quantity      Int
+  price         Float
+  total         Float
+  
+  @@index([orderId])
+  @@index([productId])
+}
+
+// Payment model
+model Payment {
+  id            String     @id @default(cuid())
+  userId        String
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Payment details
+  amount        Float
+  currency      String     @default("USDC")
+  
+  // Blockchain
+  txHash        String?    @unique
+  fromAddress   String
+  toAddress     String
+  chainId       Int
+  
+  // Status
+  status        String     @default("pending") // pending, confirmed, failed, refunded
+  
+  // Escrow
+  escrowId      String?
+  escrowStatus  String?    // pending, released, disputed, resolved
+  
+  // Relationships
+  orders        Order[]
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  @@index([userId])
+  @@index([status])
+  @@index([txHash])
+}
+
+// Transaction model (for tracking all blockchain transactions)
+model Transaction {
+  id            String     @id @default(cuid())
+  userId        String
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  type          String     // payment, withdrawal, refund, fee
+  amount        Float
+  currency      String
+  
+  txHash        String     @unique
+  chainId       Int
+  
+  status        String     @default("pending") // pending, confirmed, failed
+  
+  metadata      String?   // JSON as text
+  
+  createdAt     DateTime   @default(now())
+  
+  @@index([userId])
+  @@index([type])
+  @@index([status])
+}
+
+// Subscription model
+model Subscription {
+  id            String     @id @default(cuid())
+  userId        String     @unique
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  tier          String     @default("free") // free, starter, popular, golden
+  
+  // Billing
+  monthlyPrice  Float
+  billingCycle  String     @default("monthly") // monthly, yearly
+  
+  // Status
+  status        String     @default("active") // active, cancelled, expired
+  
+  // Dates
+  startDate     DateTime   @default(now())
+  renewalDate   DateTime
+  cancelledAt   DateTime?
+  
+  // Features
+  maxStores     Int
+  maxProducts   Int
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  @@index([userId])
+  @@index([tier])
+}
+
+// API Key model (for developers)
+model ApiKey {
+  id            String     @id @default(cuid())
+  userId        String
+  
+  key           String     @unique
+  name          String
+  
+  isActive      Boolean    @default(true)
+  lastUsedAt    DateTime?
+  
+  createdAt     DateTime   @default(now())
+  
+  @@index([userId])
+}
+
+// Audit Log model
+model AuditLog {
+  id            String     @id @default(cuid())
+  userId        String?
+  
+  action        String
+  resource      String
+  resourceId    String
+  
+  changes       String?   // JSON as text
+  ipAddress     String?
+  userAgent     String?
+  
+  createdAt     DateTime   @default(now())
+  
+  @@index([userId])
+  @@index([action])
+}
